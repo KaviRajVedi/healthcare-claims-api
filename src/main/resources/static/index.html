@@ -58,6 +58,32 @@
 
         <div class="panel">
             <div class="section-heading">
+                <h2>Create Patient</h2>
+                <span>Add patient details</span>
+            </div>
+            <form id="patientForm" class="form">
+                <label>
+                    Name
+                    <input id="patientName" type="text" placeholder="John Doe" required>
+                </label>
+                <label>
+                    Age
+                    <input id="patientAge" type="number" min="0" max="130" placeholder="45" required>
+                </label>
+                <label>
+                    Status
+                    <select id="patientStatus" required>
+                        <option value="ACTIVE">ACTIVE</option>
+                        <option value="INACTIVE">INACTIVE</option>
+                    </select>
+                </label>
+                <button type="submit">Create Patient</button>
+                <p id="patientFormMessage" class="form-message"></p>
+            </form>
+        </div>
+
+        <div class="panel">
+            <div class="section-heading">
                 <h2>Create Claim</h2>
                 <span>New claims start as SUBMITTED</span>
             </div>

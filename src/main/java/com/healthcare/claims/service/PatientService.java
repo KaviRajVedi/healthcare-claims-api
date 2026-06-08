@@ -1,5 +1,7 @@
 package com.healthcare.claims.service;
 
+import com.healthcare.claims.domain.Patient;
+import com.healthcare.claims.dto.CreatePatientRequest;
 import com.healthcare.claims.dto.PatientResponse;
 import com.healthcare.claims.repository.PatientRepository;
 import org.springframework.stereotype.Service;
@@ -22,5 +24,16 @@ public class PatientService {
                 .stream()
                 .map(PatientResponse::from)
                 .toList();
+    }
+
+    @Transactional
+    public PatientResponse createPatient(CreatePatientRequest request) {
+        Patient patient = new Patient(
+                request.name().trim(),
+                request.age(),
+                request.status()
+        );
+
+        return PatientResponse.from(patientRepository.save(patient));
     }
 }

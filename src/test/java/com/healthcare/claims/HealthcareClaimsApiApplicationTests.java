@@ -43,6 +43,40 @@ class HealthcareClaimsApiApplicationTests {
     }
 
     @Test
+    void shouldCreatePatient() throws Exception {
+        mockMvc.perform(post("/patients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "name": "Avery Johnson",
+                                  "age": 38,
+                                  "status": "ACTIVE"
+                                }
+                                """))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.name").value("Avery Johnson"))
+                .andExpect(jsonPath("$.age").value(38))
+                .andExpect(jsonPath("$.status").value(PatientStatus.ACTIVE.name()));
+    }
+
+    @Test
+    void shouldValidateCreatePatientRequest() throws Exception {
+        mockMvc.perform(post("/patients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "name": "",
+                                  "age": -1
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.validationErrors.name").exists())
+                .andExpect(jsonPath("$.validationErrors.age").exists())
+                .andExpect(jsonPath("$.validationErrors.status").exists());
+    }
+
+    @Test
     void shouldCreateClaimAndUpdateStatus() throws Exception {
         Patient patient = patientRepository.save(new Patient("Test Patient", 29, PatientStatus.ACTIVE));
 

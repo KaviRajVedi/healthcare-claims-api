@@ -1,4 +1,5 @@
 const claimStatuses = ["SUBMITTED", "IN_REVIEW", "APPROVED", "REJECTED", "PAID"];
+const patientStatuses = ["ACTIVE", "INACTIVE"];
 
 let patients = [];
 let selectedPatientId = null;
@@ -116,6 +117,36 @@ async function updateClaimStatus(claimId, claimStatus) {
     });
     await loadDashboard();
 }
+
+document.getElementById("patientForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const formMessage = document.getElementById("patientFormMessage");
+    formMessage.textContent = "";
+
+    try {
+        const name = document.getElementById("patientName").value;
+        const age = Number(document.getElementById("patientAge").value);
+        const status = document.getElementById("patientStatus").value;
+
+        if (!patientStatuses.includes(status)) {
+            throw new Error("Invalid patient status");
+        }
+
+        const patient = await api("/patients", {
+            method: "POST",
+            body: JSON.stringify({ name, age, status })
+        });
+
+        selectedPatientId = patient.id;
+        document.getElementById("patientName").value = "";
+        document.getElementById("patientAge").value = "";
+        document.getElementById("patientStatus").value = "ACTIVE";
+        formMessage.textContent = "Patient created.";
+        await loadDashboard();
+    } catch (error) {
+        formMessage.textContent = error.message;
+    }
+});
 
 document.getElementById("claimForm").addEventListener("submit", async (event) => {
     event.preventDefault();
